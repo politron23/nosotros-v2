@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Algoritmo - Nosotros v2</title>
+<title>Proyecto Nosotros</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -10,53 +10,50 @@
 body {
     background-color: #0f172a;
     color: #e2e8f0;
-    font-family: monospace;
+    font-family: 'Courier New', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    text-align: center;
     margin: 0;
 }
 
 .container {
-    background: #1e293b;
-    padding: 40px;
+    background: #111827;
+    padding: 50px;
     border-radius: 12px;
-    box-shadow: 0 0 25px rgba(236, 72, 153, 0.4);
-    width: 550px;
+    box-shadow: 0 0 40px rgba(255,255,255,0.05);
+    width: 600px;
+    text-align: center;
 }
 
-h2, h3 {
-    margin-bottom: 15px;
+h2 {
+    margin-bottom: 20px;
 }
 
 button {
-    margin: 15px;
-    padding: 12px 25px;
+    margin-top: 25px;
+    padding: 12px 28px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     transition: 0.3s;
 }
 
 .accept {
-    background-color: #ec4899;
+    background-color: #2563eb;
     color: white;
 }
 
 .accept:hover {
-    background-color: #db2777;
+    background-color: #1d4ed8;
 }
 
-.reject {
-    background-color: #475569;
-    color: white;
-}
-
-.reject:hover {
-    background-color: #334155;
+#processing {
+    margin-top: 20px;
+    font-style: italic;
+    color: #94a3b8;
 }
 </style>
 </head>
@@ -64,121 +61,113 @@ button {
 <body>
 
 <div class="container">
-    <h2>🧮 Ejecutando algoritmo...</h2>
-
-    <p>Tiempo separados = Sí</p>
-    <p>Distancia física = Presente</p>
-    <p>Conexión emocional = Activa</p>
-    <p>Sentimientos = No finalizados</p>
-    <p>Probabilidad de nosotros = Alta</p>
-
-    <h3>Resultado final:</h3>
-    <p><strong>El sistema detecta que aún hay algo que vale la pena intentar.</strong></p>
-
-    <h3>¿Te gustaría continuar este proyecto conmigo este San Valentín? 💖</h3>
-
-    <button class="accept" onclick="generatePDF()">Aceptar</button>
-    <button class="reject" onclick="alert('Error 404: Esta opción no está disponible 😌')">Rechazar</button>
+    <h2>Sistema de Evaluación Emocional</h2>
+    <p>Análisis final del proyecto en curso...</p>
+    <button class="accept" onclick="startProcessing()">Generar informe</button>
+    <div id="processing"></div>
 </div>
 
 <script>
+
+function startProcessing() {
+    const processingDiv = document.getElementById("processing");
+    processingDiv.innerHTML = "Procesando evaluación...";
+    setTimeout(() => {
+        generatePDF();
+        processingDiv.innerHTML = "";
+    }, 2500);
+}
+
 async function generatePDF() {
-
-    const nombre = prompt("Ingrese su nombre completo:");
-
-    if (!nombre) {
-        alert("Nombre no válido 😌");
-        return;
-    }
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const centerX = pageWidth / 2;
-
+    const margin = 25;
     const fecha = new Date().toLocaleDateString("es-MX");
 
-    // 🎨 Fondo rosa claro
-    doc.setFillColor(255, 240, 246);
-    doc.rect(0, 0, pageWidth, pageHeight, "F");
+    function addBorder() {
+        doc.setDrawColor(30, 41, 59);
+        doc.setLineWidth(1.5);
+        doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
+    }
 
-    // 🖼️ Borde tipo diploma
-    doc.setDrawColor(236, 72, 153);
-    doc.setLineWidth(3);
-    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+    function addHeader() {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("INFORME PERSONAL", pageWidth / 2, 35, { align: "center" });
+        doc.setFontSize(12);
+        doc.text("Proyecto: Nosotros", pageWidth / 2, 45, { align: "center" });
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+    }
 
-    doc.setLineWidth(1);
-    doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
+    doc.setFillColor(255,255,255);
+    doc.rect(0,0,pageWidth,pageHeight,"F");
 
-    // 🏷️ Título
+    addBorder();
+    addHeader();
+
+    const carta = `Hola, mi vida.
+
+Quiero decirte algunas cosas, y tal vez sea la última vez que te escriba algo así. Porque ya me canse de intentar sola y de sentir que no hay acciones de tu parte para recuperar lo nuestro. Mis ganas han sido muchas, pero el amor no funciona si no es mutuo.
+
+Eres una persona demasiado importante para mí. Siempre creí que lo nuestro iba a funcionar, que íbamos a cumplir nuestras metas y construir nuestros sueños juntos. Sin embargo, parece que el destino tenía otro camino preparado para nosotros.
+
+Quiero que sepas que eres el único hombre al que he amado de esta manera. Nunca quise perderte. Fuiste mi prioridad y muchas veces intenté demostrártelo. Si soy sincera, a veces quisiera regresar el tiempo a cuando solo éramos tú y yo, sin tanto ruido alrededor.
+
+Me hubiera gustado seguir aquí, pero siento que en tus planes ya no estoy yo, y poco a poco he tenido que aceptarlo. Nunca supe exactamente cuándo nos empezamos a perder. Hubo muchas peleas, sí, pero también hubo muchas risas. Sabíamos arreglar nuestras diferencias, pero esta vez el orgullo nos ganó.
+
+Espero que, aunque yo ya no esté en tu vida, nunca me olvides. Que recuerdes los momentos que compartimos y todo lo que construimos. Y sobre todo, nunca permitas que alguien te dé menos de lo que yo intenté darte.
+
+No me arrepiento de haberte conocido ni de haberte amado. Me enseñaste lo que es amar de verdad, y también entendí que amar implica saber soltar.
+
+Hay algo que me dolió profundamente y que fue la razón por la que todo cambió para mí. Nunca imaginé que llegarías al punto de no querer convivir con mi familia, cuando ellos siempre te recibieron con respeto y cariño. Esperé, con todo mi corazón, que en algún momento reflexionaras, que me pidieras una disculpa o que al menos reconocieras que en esa situación yo tenía razón. No porque quisiera ganar una discusión, sino porque necesitaba sentir que entendías lo importante que es mi familia para mí.
+
+Esa fue la parte que me hizo darme cuenta de que tenía que soltar. Porque no puedo construir una vida con alguien que no está dispuesto a aceptar y respetar a las personas que más amo. Antes de cualquier relación, están mamá y papá. No es una competencia, es una prioridad. Y cuando sentí que eso no podía ser comprendido, entendí que por más amor que hubiera, yo no podía seguir ahí.
+
+Aun así, una parte de mí siempre estará contigo, y una parte de ti siempre vivirá en mí. Me voy tranquila, con el corazón lleno de lo que vivimos.
+
+Gracias por compartir una parte de tu vida conmigo.`;
+
+    let y = 65;
+    const lineHeight = 7;
+    const textWidth = pageWidth - margin * 2;
+    const lines = doc.splitTextToSize(carta, textWidth);
+
+    lines.forEach(line => {
+        if (y > pageHeight - 40) {
+            doc.addPage();
+            doc.setFillColor(255,255,255);
+            doc.rect(0,0,pageWidth,pageHeight,"F");
+            addBorder();
+            y = 40;
+        }
+        doc.text(line, margin, y);
+        y += lineHeight;
+    });
+
+    y += 10;
+
+    if (y > pageHeight - 40) {
+        doc.addPage();
+        doc.setFillColor(255,255,255);
+        doc.rect(0,0,pageWidth,pageHeight,"F");
+        addBorder();
+        y = 40;
+    }
+
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(26);
-    doc.setTextColor(120, 0, 60);
-    doc.text("CERTIFICADO OFICIAL", centerX, 50, { align: "center" });
-
-    doc.setFontSize(18);
-    doc.text("Proyecto: Nosotros v2 💖", centerX, 65, { align: "center" });
-
-    // 📜 Texto formal
+    doc.text("Paola Sarai Politron Santillan", margin, y);
+    y += 7;
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
+    doc.text("Fecha: " + fecha, margin, y);
 
-    doc.text(`Se certifica que ${nombre}`, centerX, 95, { align: "center" });
-
-    doc.text(
-        "ha sido oficialmente identificado como",
-        centerX,
-        105,
-        { align: "center" }
-    );
-
-    doc.setFont("helvetica", "bold");
-    doc.text(
-        "Parte fundamental del proyecto denominado 'Nosotros'.",
-        centerX,
-        120,
-        { align: "center" }
-    );
-
-    doc.setFont("helvetica", "normal");
-    doc.text(
-        "Este acuerdo representa la intención mutua",
-        centerX,
-        135,
-        { align: "center" }
-    );
-
-    doc.text(
-        "de continuar desarrollando esta conexión",
-        centerX,
-        145,
-        { align: "center" }
-    );
-
-    doc.text(
-        "con compromiso, cariño y determinación.",
-        centerX,
-        155,
-        { align: "center" }
-    );
-
-    doc.text(`Fecha de emisión: ${fecha}`, centerX, 175, { align: "center" });
-
-    // ✍ Firma
-    doc.setFont("helvetica", "italic");
-    doc.text("Firmado digitalmente por:", centerX, 200, { align: "center" });
-
-    doc.setFont("helvetica", "bold");
-    doc.text("Paola Sarai Politron Santillan", centerX, 210, { align: "center" });
-
-    doc.setFont("helvetica", "normal");
-    doc.text("Ingeniera en Sistemas y en sentimientos 💻❤️", centerX, 220, { align: "center" });
-
-    doc.save("Certificado_Proyecto_Nosotros_v2.pdf");
+    doc.save("Informe_Personal.pdf");
 }
+
 </script>
 
 </body>
