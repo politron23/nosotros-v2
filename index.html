@@ -2,15 +2,15 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Proyecto Nosotros</title>
+<title>Este Año Es Diferente</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 body {
-    background-color: #0f172a;
-    color: #e2e8f0;
-    font-family: 'Courier New', monospace;
+    background-color: #111827;
+    color: #f3f4f6;
+    font-family: 'Georgia', serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,7 +19,7 @@ body {
 }
 
 .container {
-    background: #111827;
+    background: #1f2937;
     padding: 50px;
     border-radius: 12px;
     box-shadow: 0 0 40px rgba(255,255,255,0.05);
@@ -29,6 +29,7 @@ body {
 
 h2 {
     margin-bottom: 20px;
+    letter-spacing: 1px;
 }
 
 button {
@@ -39,21 +40,18 @@ button {
     cursor: pointer;
     font-size: 15px;
     transition: 0.3s;
-}
-
-.accept {
-    background-color: #2563eb;
+    background-color: #e11d48;
     color: white;
 }
 
-.accept:hover {
-    background-color: #1d4ed8;
+button:hover {
+    background-color: #be123c;
 }
 
 #processing {
     margin-top: 20px;
     font-style: italic;
-    color: #94a3b8;
+    color: #d1d5db;
 }
 </style>
 </head>
@@ -61,9 +59,9 @@ button {
 <body>
 
 <div class="container">
-    <h2>Sistema de Evaluación Emocional</h2>
-    <p>Análisis final del proyecto en curso...</p>
-    <button class="accept" onclick="startProcessing()">Generar informe</button>
+    <h2>Este Año Es Diferente</h2>
+    <p>Una carta escrita con honestidad.</p>
+    <button onclick="startProcessing()">Abrir carta</button>
     <div id="processing"></div>
 </div>
 
@@ -71,11 +69,21 @@ button {
 
 function startProcessing() {
     const processingDiv = document.getElementById("processing");
-    processingDiv.innerHTML = "Procesando evaluación...";
+
+    processingDiv.innerHTML = "En un día donde todos hablan de amor...";
+    
+    setTimeout(() => {
+        processingDiv.innerHTML = "Yo quiero hablar con honestidad...";
+    }, 1300);
+
+    setTimeout(() => {
+        processingDiv.innerHTML = "Porque este año es diferente...";
+    }, 2600);
+
     setTimeout(() => {
         generatePDF();
         processingDiv.innerHTML = "";
-    }, 2500);
+    }, 4000);
 }
 
 async function generatePDF() {
@@ -89,30 +97,29 @@ async function generatePDF() {
     const fecha = new Date().toLocaleDateString("es-MX");
 
     function addBorder() {
-        doc.setDrawColor(30, 41, 59);
-        doc.setLineWidth(1.5);
+        doc.setDrawColor(100, 100, 100);
+        doc.setLineWidth(1.2);
         doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
-    }
-
-    function addHeader() {
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(16);
-        doc.text("INFORME PERSONAL", pageWidth / 2, 35, { align: "center" });
-        doc.setFontSize(12);
-        doc.text("Proyecto: Nosotros", pageWidth / 2, 45, { align: "center" });
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
     }
 
     doc.setFillColor(255,255,255);
     doc.rect(0,0,pageWidth,pageHeight,"F");
-
     addBorder();
-    addHeader();
 
-    const carta = `Hola, mi vida.
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text("ESTE AÑO ES DIFERENTE", pageWidth / 2, 35, { align: "center" });
 
-Quiero decirte algunas cosas, y tal vez sea la última vez que te escriba algo así. Porque ya me canse de intentar sola y de sentir que no hay acciones de tu parte para recuperar lo nuestro. Mis ganas han sido muchas, pero el amor no funciona si no es mutuo.
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "italic");
+    doc.text("San Valentín", pageWidth / 2, 45, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+
+    const carta = `En un día como hoy, donde todos hablan de amor, yo quiero hablar con honestidad sobre el nuestro.
+
+Quiero decirte algunas cosas, y tal vez sea la última vez que te escriba algo así. Me he cansado de intentar sola y de sentir que no hay acciones de tu parte para recuperar lo nuestro. Mis ganas han sido muchas, pero el amor no funciona si no es mutuo.
 
 Eres una persona demasiado importante para mí. Siempre creí que lo nuestro iba a funcionar, que íbamos a cumplir nuestras metas y construir nuestros sueños juntos. Sin embargo, parece que el destino tenía otro camino preparado para nosotros.
 
@@ -150,22 +157,14 @@ Gracias por compartir una parte de tu vida conmigo.`;
     });
 
     y += 10;
-
-    if (y > pageHeight - 40) {
-        doc.addPage();
-        doc.setFillColor(255,255,255);
-        doc.rect(0,0,pageWidth,pageHeight,"F");
-        addBorder();
-        y = 40;
-    }
-
     doc.setFont("helvetica", "bold");
     doc.text("Paola Sarai Politron Santillan", margin, y);
+
     y += 7;
     doc.setFont("helvetica", "normal");
     doc.text("Fecha: " + fecha, margin, y);
 
-    doc.save("Informe_Personal.pdf");
+    doc.save("Este_Año_Es_Diferente.pdf");
 }
 
 </script>
