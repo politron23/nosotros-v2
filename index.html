@@ -118,9 +118,9 @@ async function generatePDF() {
 
         // Foto de ustedes como fondo tenue
         const fondo = await loadImage("nosotros.jpg");
-        //doc.setGState(new doc.GState({ opacity: 0.10 }));
-        //doc.addImage(fondo, "JPEG", 0, 0, pageWidth, pageHeight);
-        //doc.setGState(new doc.GState({ opacity: 1 }));
+        doc.setGState(new doc.GState({ opacity: 0.10 }));
+        doc.addImage(fondo, "JPEG", 0, 0, pageWidth, pageHeight);
+        doc.setGState(new doc.GState({ opacity: 1 }));
 
         addBorder();
     }
