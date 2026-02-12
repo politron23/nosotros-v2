@@ -61,12 +61,11 @@ button:hover {
 <div class="container">
     <h2>Este Año Es Diferente</h2>
     <p>Una carta escrita con honestidad y con todo mi Amooor.</p>
-    <button onclick="startProcessing()">Abrela Chamaquito</button>
+    <button onclick="startProcessing()">Ábrela Chamaquito</button>
     <div id="processing"></div>
 </div>
 
 <script>
-
 function startProcessing() {
     const processingDiv = document.getElementById("processing");
 
@@ -81,13 +80,12 @@ function startProcessing() {
     }, 2600);
 
     setTimeout(() => {
-        generatePDF();
         processingDiv.innerHTML = "";
+        generatePDF();
     }, 4000);
 }
 
-async function generatePDF() {
-
+function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
@@ -96,37 +94,12 @@ async function generatePDF() {
     const margin = 25;
     const fecha = new Date().toLocaleDateString("es-MX");
 
-    function loadImage(url) {
-        return new Promise(resolve => {
-            const img = new Image();
-            img.crossOrigin = "Anonymous";
-            img.onload = () => resolve(img);
-            img.src = url;
-        });
-    }
+    // Bordes
+    doc.setDrawColor(100, 100, 100);
+    doc.setLineWidth(1.2);
+    doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
 
-    function addBorder() {
-        doc.setDrawColor(100, 100, 100);
-        doc.setLineWidth(1.2);
-        doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
-    }
-
-    async function decoratePage() {
-        // Fondo blanco base
-        doc.setFillColor(255,255,255);
-        doc.rect(0,0,pageWidth,pageHeight,"F");
-
-        // Foto de ustedes como fondo tenue
-        const fondo = await loadImage("nosotros.jpg");
-        doc.setGState(new doc.GState({ opacity: 0.10 }));
-        doc.addImage(fondo, "JPEG", 0, 0, pageWidth, pageHeight);
-        doc.setGState(new doc.GState({ opacity: 1 }));
-
-        addBorder();
-    }
-
-    await decoratePage();
-
+    // Título
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
     doc.text("ESTE AÑO ES DIFERENTE", pageWidth / 2, 35, { align: "center" });
@@ -135,9 +108,9 @@ async function generatePDF() {
     doc.setFont("helvetica", "italic");
     doc.text("San Valentín", pageWidth / 2, 45, { align: "center" });
 
+    // Carta
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-
     const carta = `En un día como hoy, donde todos hablan de amor, yo quiero hablar con honestidad sobre lo nuestro.
 
 Quiero decirte algunas cosas, y tal vez sea la última vez que te escriba algo así. Me he cansado de intentar sola y de sentir que no hay acciones de tu parte para recuperar lo nuestro. Mis ganas han sido muchas, pero el amor no funciona si no es mutuo.
@@ -162,13 +135,11 @@ Y si algún día entiendes todo lo que significó esto, sabrás dónde encontrar
 
     let y = 65;
     const lineHeight = 7;
-    const textWidth = pageWidth - margin * 2;
-    const lines = doc.splitTextToSize(carta, textWidth);
+    const lines = doc.splitTextToSize(carta, pageWidth - margin * 2);
 
     for (let line of lines) {
         if (y > pageHeight - 40) {
             doc.addPage();
-            await decoratePage();
             y = 40;
         }
         doc.text(line, margin, y);
@@ -185,7 +156,6 @@ Y si algún día entiendes todo lo que significó esto, sabrás dónde encontrar
 
     doc.save("Este_Año_Es_Diferente.pdf");
 }
-
 </script>
 
 </body>
