@@ -2,8 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Algoritmo de Decisión</title>
+<title>Algoritmo - Nosotros v2</title>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
 body {
     background-color: #0f172a;
@@ -14,36 +16,56 @@ body {
     align-items: center;
     height: 100vh;
     text-align: center;
+    margin: 0;
 }
+
 .container {
     background: #1e293b;
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
-    width: 500px;
+    box-shadow: 0 0 25px rgba(236, 72, 153, 0.4);
+    width: 550px;
 }
+
+h2, h3 {
+    margin-bottom: 15px;
+}
+
 button {
     margin: 15px;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    transition: 0.3s;
 }
+
 .accept {
     background-color: #ec4899;
     color: white;
 }
+
+.accept:hover {
+    background-color: #db2777;
+}
+
 .reject {
     background-color: #475569;
     color: white;
 }
+
+.reject:hover {
+    background-color: #334155;
+}
 </style>
 </head>
+
 <body>
 
 <div class="container">
     <h2>🧮 Ejecutando algoritmo...</h2>
+
     <p>Tiempo separados = Sí</p>
     <p>Distancia física = Presente</p>
     <p>Conexión emocional = Activa</p>
@@ -51,7 +73,6 @@ button {
     <p>Probabilidad de nosotros = Alta</p>
 
     <h3>Resultado final:</h3>
-    <p>Después de ejecutar el algoritmo...</p>
     <p><strong>El sistema detecta que aún hay algo que vale la pena intentar.</strong></p>
 
     <h3>¿Te gustaría continuar este proyecto conmigo este San Valentín? 💖</h3>
@@ -62,24 +83,101 @@ button {
 
 <script>
 async function generatePDF() {
+
+    const nombre = prompt("Ingrese su nombre completo:");
+
+    if (!nombre) {
+        alert("Nombre no válido 😌");
+        return;
+    }
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const centerX = pageWidth / 2;
+
+    const fecha = new Date().toLocaleDateString("es-MX");
+
+    // 🎨 Fondo rosa claro
+    doc.setFillColor(255, 240, 246);
+    doc.rect(0, 0, pageWidth, pageHeight, "F");
+
+    // 🖼️ Borde tipo diploma
+    doc.setDrawColor(236, 72, 153);
+    doc.setLineWidth(3);
+    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+
+    doc.setLineWidth(1);
+    doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
+
+    // 🏷️ Título
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(26);
+    doc.setTextColor(120, 0, 60);
+    doc.text("CERTIFICADO OFICIAL", centerX, 50, { align: "center" });
+
     doc.setFontSize(18);
-    doc.text("Certificado Oficial - Intento 2.0 💖", 20, 30);
+    doc.text("Proyecto: Nosotros v2 💖", centerX, 65, { align: "center" });
 
+    // 📜 Texto formal
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(14);
-    doc.text("Este documento certifica que:", 20, 50);
-    doc.text("Existe la intención mutua de continuar", 20, 60);
-    doc.text("este proyecto llamado 'Nosotros'.", 20, 70);
+    doc.setTextColor(0, 0, 0);
 
-    doc.text("Fecha: 14 de Febrero 2026", 20, 90);
+    doc.text(`Se certifica que ${nombre}`, centerX, 95, { align: "center" });
 
-    doc.text("Firmado digitalmente por:", 20, 110);
-    doc.text("Paola Sarai Politron Santillan", 20, 120);
-    doc.text("Ingeniera que aún cree en nosotros 💻❤️", 20, 130);
+    doc.text(
+        "ha sido oficialmente identificado como",
+        centerX,
+        105,
+        { align: "center" }
+    );
 
-    doc.save("Certificado_Nosotros_2.0.pdf");
+    doc.setFont("helvetica", "bold");
+    doc.text(
+        "Parte fundamental del proyecto denominado 'Nosotros'.",
+        centerX,
+        120,
+        { align: "center" }
+    );
+
+    doc.setFont("helvetica", "normal");
+    doc.text(
+        "Este acuerdo representa la intención mutua",
+        centerX,
+        135,
+        { align: "center" }
+    );
+
+    doc.text(
+        "de continuar desarrollando esta conexión",
+        centerX,
+        145,
+        { align: "center" }
+    );
+
+    doc.text(
+        "con compromiso, cariño y determinación.",
+        centerX,
+        155,
+        { align: "center" }
+    );
+
+    doc.text(`Fecha de emisión: ${fecha}`, centerX, 175, { align: "center" });
+
+    // ✍ Firma
+    doc.setFont("helvetica", "italic");
+    doc.text("Firmado digitalmente por:", centerX, 200, { align: "center" });
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Paola Sarai Politron Santillan", centerX, 210, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.text("Ingeniera en Sistemas y en sentimientos 💻❤️", centerX, 220, { align: "center" });
+
+    doc.save("Certificado_Proyecto_Nosotros_v2.pdf");
 }
 </script>
 
