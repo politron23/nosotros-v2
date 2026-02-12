@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Algoritmo de Decisión</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+body {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    font-family: monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+.container {
+    background: #1e293b;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+    width: 500px;
+}
+button {
+    margin: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.accept {
+    background-color: #ec4899;
+    color: white;
+}
+.reject {
+    background-color: #475569;
+    color: white;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🧮 Ejecutando algoritmo...</h2>
+    <p>Tiempo separados = Sí</p>
+    <p>Distancia física = Presente</p>
+    <p>Conexión emocional = Activa</p>
+    <p>Sentimientos = No finalizados</p>
+    <p>Probabilidad de nosotros = Alta</p>
+
+    <h3>Resultado final:</h3>
+    <p>Después de ejecutar el algoritmo...</p>
+    <p><strong>El sistema detecta que aún hay algo que vale la pena intentar.</strong></p>
+
+    <h3>¿Te gustaría continuar este proyecto conmigo este San Valentín? 💖</h3>
+
+    <button class="accept" onclick="generatePDF()">Aceptar</button>
+    <button class="reject" onclick="alert('Error 404: Esta opción no está disponible 😌')">Rechazar</button>
+</div>
+
+<script>
+async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Certificado Oficial - Intento 2.0 💖", 20, 30);
+
+    doc.setFontSize(14);
+    doc.text("Este documento certifica que:", 20, 50);
+    doc.text("Existe la intención mutua de continuar", 20, 60);
+    doc.text("este proyecto llamado 'Nosotros'.", 20, 70);
+
+    doc.text("Fecha: 14 de Febrero 2026", 20, 90);
+
+    doc.text("Firmado digitalmente por:", 20, 110);
+    doc.text("Paola Sarai Politron Santillan", 20, 120);
+    doc.text("Ingeniera que aún cree en nosotros 💻❤️", 20, 130);
+
+    doc.save("Certificado_Nosotros_2.0.pdf");
+}
+</script>
+
+</body>
+</html>
