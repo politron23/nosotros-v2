@@ -61,7 +61,7 @@ button:hover {
 <div class="container">
     <h2>Este Año Es Diferente</h2>
     <p>Una carta escrita con honestidad y con todo mi Amooor.</p>
-    <button onclick="startProcessing()">Abrir carta</button>
+    <button onclick="startProcessing()">Abrela Chamaquito</button>
     <div id="processing"></div>
 </div>
 
@@ -96,15 +96,36 @@ async function generatePDF() {
     const margin = 25;
     const fecha = new Date().toLocaleDateString("es-MX");
 
+    function loadImage(url) {
+        return new Promise(resolve => {
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = () => resolve(img);
+            img.src = url;
+        });
+    }
+
     function addBorder() {
         doc.setDrawColor(100, 100, 100);
         doc.setLineWidth(1.2);
         doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
     }
 
-    doc.setFillColor(255,255,255);
-    doc.rect(0,0,pageWidth,pageHeight,"F");
-    addBorder();
+    async function decoratePage() {
+        // Fondo blanco base
+        doc.setFillColor(255,255,255);
+        doc.rect(0,0,pageWidth,pageHeight,"F");
+
+        // Foto de ustedes como fondo tenue
+        const fondo = await loadImage("nosotros.jpg");
+        doc.setGState(new doc.GState({ opacity: 0.10 }));
+        doc.addImage(fondo, "JPEG", 0, 0, pageWidth, pageHeight);
+        doc.setGState(new doc.GState({ opacity: 1 }));
+
+        addBorder();
+    }
+
+    await decoratePage();
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
@@ -117,7 +138,7 @@ async function generatePDF() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
 
-   const carta = `En un día como hoy, donde todos hablan de amor, yo quiero hablar con honestidad sobre lo nuestro.
+    const carta = `En un día como hoy, donde todos hablan de amor, yo quiero hablar con honestidad sobre lo nuestro.
 
 Quiero decirte algunas cosas, y tal vez sea la última vez que te escriba algo así. Me he cansado de intentar sola y de sentir que no hay acciones de tu parte para recuperar lo nuestro. Mis ganas han sido muchas, pero el amor no funciona si no es mutuo.
 
@@ -129,35 +150,30 @@ Me hubiera gustado seguir aquí, pero siento que en tus planes ya no estoy yo co
 
 No me arrepiento de haberte conocido ni de haberte amado. Me enseñaste lo que es amar de verdad, y también entendí que amar implica saber soltar.
 
-Hay algo que me dolió profundamente y que fue la razón por la que todo cambió para mí. Nunca imaginé que llegarías al punto de no querer convivir con mi familia, cuando ellos siempre te recibieron con respeto y cariño. Esperé, con todo mi corazón, que en algún momento reflexionaras, que me pidieras una disculpa o que al menos reconocieras que en esa situación yo tenía razón. No porque quisiera ganar una discusión, sino porque necesitaba sentir que entendías lo importante que es mi familia para mí.
+Hay algo que me dolió profundamente y que fue la razón por la que todo cambió para mí. Nunca imaginé que llegarías al punto de no querer convivir con mi familia, cuando ellos siempre te recibieron con respeto y cariño.
 
-Esa fue la parte que me hizo darme cuenta de que tenía que soltar. Porque no puedo construir una vida con alguien que no está dispuesto a aceptar y respetar a las personas que más amo. Antes de cualquier relación, están mamá y papá. No es una competencia, es una prioridad. Y cuando sentí que eso no podía ser comprendido, entendí que por más amor que hubiera, yo no podía seguir en el mismo lugar.
+Y aunque seguimos hablando y todavía compartimos momentos, necesitaba escribir esto para poner en palabras lo que siento.
 
-Y aunque seguimos hablando y todavía compartimos momentos, necesitaba escribir esto para poner en palabras lo que siento. No lo hago para alejarnos, sino para ser honesta conmigo y contigo.
-
-Aun así, una parte de mí siempre estará contigo, y una parte de ti siempre vivirá en mí. Me voy tranquila, con el corazón lleno de lo que vivimos.
+Aun así, una parte de mí siempre estará contigo, y una parte de ti siempre vivirá en mí.
 
 Gracias por compartir una parte de tu vida conmigo.
 
 Y si algún día entiendes todo lo que significó esto, sabrás dónde encontrarme.`;
-
 
     let y = 65;
     const lineHeight = 7;
     const textWidth = pageWidth - margin * 2;
     const lines = doc.splitTextToSize(carta, textWidth);
 
-    lines.forEach(line => {
+    for (let line of lines) {
         if (y > pageHeight - 40) {
             doc.addPage();
-            doc.setFillColor(255,255,255);
-            doc.rect(0,0,pageWidth,pageHeight,"F");
-            addBorder();
+            await decoratePage();
             y = 40;
         }
         doc.text(line, margin, y);
         y += lineHeight;
-    });
+    }
 
     y += 10;
     doc.setFont("helvetica", "bold");
