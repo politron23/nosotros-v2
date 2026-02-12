@@ -85,32 +85,90 @@ function startProcessing() {
     }, 4000);
 }
 
-function generatePDF() {
+async function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 25;
+    const margin = 30; // márgenes para la carta centrada
     const fecha = new Date().toLocaleDateString("es-MX");
 
-    // Bordes
-    doc.setDrawColor(100, 100, 100);
-    doc.setLineWidth(1.2);
-    doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
+    // Función para cargar la imagen
+    function loadImage(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = () => resolve(img);
+            img.onerror = () => reject("No se pudo cargar la imagen");
+            img.src = url;
+        });
+    }
 
-    // Título
+    // Decorar cada página con fondo y bordes
+    async function decoratePage() {
+        // Fondo blanco
+        doc.setFillColor(255,255,255);
+        doc.rect(0,0,pageWidth,pageHeight,"F");
+
+        // Intentar poner la imagen de fondo recortada
+        try {
+            const fondo = await loadImage("nosotros.jpg");
+
+            const pageRatio = pageWidth / pageHeight;
+            const imgRatio = fondo.width / fondo.height;
+
+            let drawWidth, drawHeight, sx, sy, sw, sh;
+
+            if (imgRatio > pageRatio) {
+                // Imagen más ancha -> recortar lados
+                drawHeight = fondo.height;
+                drawWidth = drawHeight * pageRatio;
+                sx = (fondo.width - drawWidth) / 2;
+                sy = 0;
+            } else {
+                // Imagen más alta -> recortar arriba/abajo
+                drawWidth = fondo.width;
+                drawHeight = drawWidth / pageRatio;
+                sx = 0;
+                sy = (fondo.height - drawHeight) / 2;
+            }
+
+            // Dibujar en canvas con opacidad
+            const canvas = document.createElement("canvas");
+            canvas.width = drawWidth;
+            canvas.height = drawHeight;
+            const ctx = canvas.getContext("2d");
+            ctx.globalAlpha = 0.10;
+            ctx.drawImage(fondo, sx, sy, drawWidth, drawHeight, 0, 0, drawWidth, drawHeight);
+
+            const imgData = canvas.toDataURL("image/jpeg");
+            doc.addImage(imgData, "JPEG", 0, 0, pageWidth, pageHeight);
+
+        } catch(e) {
+            console.warn("No se cargó la imagen de fondo:", e);
+        }
+
+        // Bordes fijos
+        doc.setDrawColor(100, 100, 100);
+        doc.setLineWidth(1.2);
+        doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
+    }
+
+    await decoratePage();
+
+    // Carta centrada verticalmente
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    doc.text("ESTE AÑO ES DIFERENTE", pageWidth / 2, 35, { align: "center" });
+    doc.text("ESTE AÑO ES DIFERENTE", pageWidth / 2, 60, { align: "center" });
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "italic");
-    doc.text("San Valentín", pageWidth / 2, 45, { align: "center" });
+    doc.text("San Valentín", pageWidth / 2, 70, { align: "center" });
 
-    // Carta
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
+
     const carta = `En un día como hoy, donde todos hablan de amor, yo quiero hablar con honestidad sobre lo nuestro.
 
 Quiero decirte algunas cosas, y tal vez sea la última vez que te escriba algo así. Me he cansado de intentar sola y de sentir que no hay acciones de tu parte para recuperar lo nuestro. Mis ganas han sido muchas, pero el amor no funciona si no es mutuo.
@@ -133,17 +191,19 @@ Gracias por compartir una parte de tu vida conmigo.
 
 Y si algún día entiendes todo lo que significó esto, sabrás dónde encontrarme.`;
 
-    let y = 65;
-    const lineHeight = 7;
-    const lines = doc.splitTextToSize(carta, pageWidth - margin * 2);
+    // Dividir texto en líneas y centrar verticalmente
+    const lines = doc.splitTextToSize(carta, pageWidth - margin*2);
+    const totalHeight = lines.length * 7 + 20; // +20 para nombre y fecha
+    let y = (pageHeight - totalHeight) / 2 + 80; // +80 para título
 
     for (let line of lines) {
         if (y > pageHeight - 40) {
             doc.addPage();
+            await decoratePage();
             y = 40;
         }
         doc.text(line, margin, y);
-        y += lineHeight;
+        y += 7;
     }
 
     y += 10;
